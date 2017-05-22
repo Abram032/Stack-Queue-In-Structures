@@ -428,7 +428,7 @@ void push_priority_queue(priority_queue_wsk *prior_q_wsk)
 		{
 			priority_queue_el current_element = (*prior_q_wsk).first;
 			priority_queue_el next_element = current_element->next;
-			while (current_element->p >= next_element->p)
+			while (p >= current_element->p);
 			{
 				current_element = next_element;
 				next_element = current_element->next;
