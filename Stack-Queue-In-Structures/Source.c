@@ -410,10 +410,34 @@ void push_priority_queue(priority_queue_wsk *prior_q_wsk)
 	}
 	else
 	{
-		priority_queue_el current_element = (*prior_q_wsk).last;
-		current_element->next = new_element;
-		new_element->prev = current_element;
-		(*prior_q_wsk).last = new_element;
+		if (p > (*prior_q_wsk).first->p)
+		{
+			priority_queue_el current_element = (*prior_q_wsk).first;
+			new_element->next = current_element;
+			current_element->prev = new_element;
+			(*prior_q_wsk).first = new_element;
+		}
+		else if (p < (*prior_q_wsk).last->p)
+		{
+			priority_queue_el current_element = (*prior_q_wsk).last;
+			new_element->prev = current_element;
+			current_element->next = new_element;
+			(*prior_q_wsk).last = new_element;
+		}
+		else
+		{
+			priority_queue_el current_element = (*prior_q_wsk).first;
+			priority_queue_el next_element = current_element->next;
+			while (current_element->p >= next_element->p)
+			{
+				current_element = next_element;
+				next_element = current_element->next;
+			}
+			new_element->prev = current_element;
+			new_element->next = next_element;
+			current_element->next = new_element;
+			next_element->prev = new_element;
+		}
 	}
 }
 void pop_priority_queue(priority_queue_wsk *prior_q_wsk)
@@ -491,7 +515,7 @@ void clear_priority_queue(priority_queue_wsk *prior_q_wsk)
 void about()
 {
 	printf("Made by Abram.\n");
-	printf("Program version: 1.22\n");
+	printf("Program version: 1.23\n");
 }
 void menu_options()
 {
