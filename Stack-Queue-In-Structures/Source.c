@@ -381,7 +381,7 @@ void clear_tw_queue(tw_queue_wsk *tw_q_wsk)
 	}
 }
 
-int empty_priortiy_queue(priority_queue_wsk prior_q_wsk)
+int empty_priority_queue(priority_queue_wsk prior_q_wsk)
 {
 	if (prior_q_wsk.first == NULL)
 	{
@@ -420,8 +420,8 @@ void pop_priority_queue(priority_queue_wsk *prior_q_wsk)
 {
 	if (empty_priority_queue(*prior_q_wsk) == 0)
 	{
-		tw_queue_el current_element = (*prior_q_wsk).first;
-		tw_queue_el next_element = current_element->next;
+		priority_queue_el current_element = (*prior_q_wsk).first;
+		priority_queue_el next_element = current_element->next;
 		(*prior_q_wsk).first = current_element->next;
 		next_element->prev = NULL;
 		free(current_element);
@@ -472,12 +472,12 @@ void view_priority_queue(priority_queue_wsk *prior_q_wsk)
 }
 void clear_priority_queue(priority_queue_wsk *prior_q_wsk)
 {
-	if (empty_priortiy_queue(*prior_q_wsk) == 0)
+	if (empty_priority_queue(*prior_q_wsk) == 0)
 	{
 		while ((*prior_q_wsk).first != NULL)
 		{
-			tw_queue_el current_element = (*prior_q_wsk).first;
-			tw_queue_el next_element = current_element->next;
+			priority_queue_el current_element = (*prior_q_wsk).first;
+			priority_queue_el next_element = current_element->next;
 			(*prior_q_wsk).first = next_element;
 			free(current_element);
 		}
@@ -491,7 +491,7 @@ void clear_priority_queue(priority_queue_wsk *prior_q_wsk)
 void about()
 {
 	printf("Made by Abram.\n");
-	printf("Program version: 1.21\n");
+	printf("Program version: 1.22\n");
 }
 void menu_options()
 {
@@ -532,8 +532,8 @@ void menu_options()
 	printf("23. View Priority queue\n");
 	printf("24. Clear Priority queue\n");
 	printf("\n");*/
-	printf("25. About\n");
-	printf("26. Exit\n");
+	printf("26. About\n");
+	printf("27. Exit\n");
 }
 
 int main()
@@ -642,25 +642,34 @@ int main()
 			system("pause");
 			break;
 		case 20:
+			push_priority_queue(&prior_q_wsk);
 			system("pause");
 			break;
 		case 21:
+			pop_priority_queue(&prior_q_wsk);
 			system("pause");
 			break;
 		case 22:
+			peek_priority_queue(&prior_q_wsk);
 			system("pause");
 			break;
 		case 23:
+			adjust_priortiy_queue(&prior_q_wsk);
 			system("pause");
 			break;
 		case 24:
+			view_priority_queue(&prior_q_wsk);
 			system("pause");
 			break;
 		case 25:
-			about();
+			clear_priority_queue(&prior_q_wsk);
 			system("pause");
 			break;
 		case 26:
+			about();
+			system("pause");
+			break;
+		case 27:
 			loop = 0;
 			break;
 		default:
