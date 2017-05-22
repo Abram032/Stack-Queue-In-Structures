@@ -392,13 +392,8 @@ int empty_priority_queue(priority_queue_wsk prior_q_wsk)
 		return 0;
 	}
 }
-void push_priority_queue(priority_queue_wsk *prior_q_wsk)
+void push_priority_queue(priority_queue_wsk *prior_q_wsk, int x, int p)
 {
-	int x, p;
-	printf("Put x: ");
-	scanf(" %d", &x);
-	printf("Set priority: ");
-	scanf(" %d", &p);
 	priority_queue_el new_element = malloc(sizeof(priority_queue));
 	new_element->x = x;
 	new_element->p = p;
@@ -445,10 +440,19 @@ void pop_priority_queue(priority_queue_wsk *prior_q_wsk)
 	if (empty_priority_queue(*prior_q_wsk) == 0)
 	{
 		priority_queue_el current_element = (*prior_q_wsk).first;
-		priority_queue_el next_element = current_element->next;
-		(*prior_q_wsk).first = current_element->next;
-		next_element->prev = NULL;
-		free(current_element);
+		if (current_element->next == NULL)
+		{
+			(*prior_q_wsk).first = NULL;
+			(*prior_q_wsk).last = NULL;
+			free(current_element);
+		}
+		else
+		{
+			priority_queue_el next_element = current_element->next;
+			(*prior_q_wsk).first = current_element->next;
+			next_element->prev = NULL;
+			free(current_element);
+		}
 	}
 	else
 	{
@@ -471,10 +475,6 @@ void peek_priority_queue(priority_queue_wsk *prior_q_wsk)
 		printf("Queue is empty!\n");
 	}
 }
-void adjust_priortiy_queue(priority_queue_wsk *prior_q_wsk)
-{
-
-}
 void view_priority_queue(priority_queue_wsk *prior_q_wsk)
 {
 	int i = 0;
@@ -492,6 +492,56 @@ void view_priority_queue(priority_queue_wsk *prior_q_wsk)
 	else
 	{
 		printf("Queue is empty!\n");
+	}
+}
+void adjust_priortiy_queue(priority_queue_wsk *prior_q_wsk)
+{
+	int n, x, p;
+	if (empty_priority_queue(*prior_q_wsk) == 1)
+	{
+		view_priority_queue(&(*prior_q_wsk));
+	}
+	else
+	{
+		view_priority_queue(&(*prior_q_wsk));
+		priority_queue_el current_element = (*prior_q_wsk).first;
+		priority_queue_el next_element;
+		priority_queue_el previous_element;
+		printf("\nWhich element would you like to adjust: ");
+		scanf(" %d", &n);
+		printf("\nSet new Priority: ");
+		scanf(" %d", &p);
+		for (int i = 1; i < n; i++)
+		{
+			current_element = current_element->next;
+			next_element = current_element->next;
+		}
+		x = current_element->x;
+		next_element = current_element->next;
+		previous_element = current_element->prev;
+		if (next_element == NULL && previous_element == NULL)
+		{
+			pop_priority_queue(&(*prior_q_wsk));
+		}
+		else if (next_element == NULL)
+		{
+			previous_element->next = NULL;
+			(*prior_q_wsk).last = previous_element;
+			free(current_element);
+		}
+		else if (previous_element == NULL)
+		{
+			next_element->prev = NULL;
+			(*prior_q_wsk).first = next_element;
+			free(current_element);
+		}
+		else
+		{
+			next_element->prev = previous_element;
+			previous_element->next = next_element;
+			free(current_element);
+		}
+		push_priority_queue(&(*prior_q_wsk), x, p);
 	}
 }
 void clear_priority_queue(priority_queue_wsk *prior_q_wsk)
@@ -562,6 +612,8 @@ void menu_options()
 
 int main()
 {
+	int x, p;
+
 	stack_el s_el = NULL;
 	queue_el q_el = NULL;
 
@@ -666,7 +718,11 @@ int main()
 			system("pause");
 			break;
 		case 20:
-			push_priority_queue(&prior_q_wsk);
+			printf("Put x: ");
+			scanf(" %d", &x);
+			printf("Set priority: ");
+			scanf(" %d", &p);
+			push_priority_queue(&prior_q_wsk, x, p);
 			system("pause");
 			break;
 		case 21:
