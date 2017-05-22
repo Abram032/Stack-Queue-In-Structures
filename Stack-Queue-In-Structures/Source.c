@@ -101,10 +101,11 @@ void view_stack(stack_el s_wsk)
 }
 void clear_stack(stack_el *s_wsk)
 {
-	while (s_wsk != NULL)
+	while (*s_wsk != NULL)
 	{
 		stack_el current_element = *s_wsk;
-		*s_wsk = current_element->next;
+		stack_el next_element = current_element->next;
+		*s_wsk = next_element;
 		free(current_element);
 	}
 }
@@ -185,7 +186,20 @@ void view_queue(queue_wsk *q_wsk)
 }
 void clear_queue(queue_wsk *q_wsk)
 {
-
+	if (empty_queue(*q_wsk) == 0)
+	{
+		while ((*q_wsk).first != NULL)
+		{
+			queue_el current_element = (*q_wsk).first;
+			queue_el next_element = current_element->next;
+			(*q_wsk).first = next_element;
+			free(current_element);
+		}
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
 }
 
 int empty_tw_queue(tw_queue_wsk tw_q_wsk) 
@@ -337,7 +351,20 @@ void view_tw_queue_reversed(tw_queue_wsk *tw_q_wsk)
 }
 void clear_tw_queue(tw_queue_wsk *tw_q_wsk)
 {
-
+	if (empty_tw_queue(*tw_q_wsk) == 0)
+	{
+		while ((*tw_q_wsk).first != NULL)
+		{
+			tw_queue_el current_element = (*tw_q_wsk).first;
+			tw_queue_el next_element = current_element->next;
+			(*tw_q_wsk).first = next_element;
+			free(current_element);
+		}
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
 }
 
 void about()
@@ -393,6 +420,7 @@ int main()
 	queue_wsk q_wsk;
 	q_wsk.first = NULL;
 	q_wsk.last = NULL;
+	tw_queue_el tw_q_el = NULL;
 	tw_queue_wsk tw_q_wsk;
 	tw_q_wsk.first = NULL;
 	tw_q_wsk.last = NULL;
