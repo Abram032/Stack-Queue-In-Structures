@@ -21,6 +21,19 @@ typedef struct queue_wsk
 	queue_el first, last;
 } queue_wsk;
 
+typedef struct tw_queue_element
+{
+	int x;
+	struct tw_queue_element *next;
+	struct tw_queue_element *prev;
+} tw_queue;
+typedef tw_queue *tw_queue_el;
+
+typedef struct tw_queue_wsk
+{
+	tw_queue_el first, last;
+} tw_queue_wsk;
+
 int empty_stack(stack_el s_wsk)
 {
 	if (s_wsk == NULL)
@@ -197,7 +210,16 @@ void menu_options()
 	printf("8. Peek at Queue (peek)\n");
 	printf("9. View Queue\n");
 	printf("10. Clear Queue\n");
-	/*printf("\n");
+	printf("\n");
+	printf("11. Add to Two Way Queue (push)\n");
+	printf("12. Add to front of Two Way Queue (push)\n");
+	printf("13. Remove from Two Way Queue (pop)\n");
+	printf("14. Remove from end of Two Way Queue (pop)\n");
+	printf("15. Peek at Two Way Queue (peek)\n");
+	printf("16. Peek at end of Two Way Queue (peek)\n");
+	printf("17. View Two Way Queue\n");
+	printf("18. Clear Two Way Queue\n");
+	/*
 	printf("14. Add to Cyclic queue (push)\n");
 	printf("15. Remove from Cyclic queue (pop)\n");
 	printf("16. Peek at Cyclic queue (peek)\n");
