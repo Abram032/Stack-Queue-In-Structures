@@ -21,6 +21,19 @@ typedef struct queue_wsk
 	queue_el first, last;
 } queue_wsk;
 
+typedef struct tw_queue_element
+{
+	int x;
+	struct tw_queue_element *next;
+	struct tw_queue_element *prev;
+} tw_queue;
+typedef tw_queue *tw_queue_el;
+
+typedef struct tw_queue_wsk
+{
+	tw_queue_el first, last;
+} tw_queue_wsk;
+
 int empty_stack(stack_el s_wsk)
 {
 	if (s_wsk == NULL)
@@ -88,10 +101,11 @@ void view_stack(stack_el s_wsk)
 }
 void clear_stack(stack_el *s_wsk)
 {
-	while (s_wsk != NULL)
+	while (*s_wsk != NULL)
 	{
 		stack_el current_element = *s_wsk;
-		*s_wsk = current_element->next;
+		stack_el next_element = current_element->next;
+		*s_wsk = next_element;
 		free(current_element);
 	}
 }
@@ -118,12 +132,9 @@ void push_queue(queue_wsk *q_wsk)
 	if ((*q_wsk).first == NULL)
 	{
 		(*q_wsk).first = (*q_wsk).last = new_element;
-		//new_struct->next = (*q_wsk).f = (*q_wsk).l;
 	}
 	else
 	{
-		//new_struct->next = (*q_wsk).l;
-		//(*q_wsk).l = new_struct;
 		(*q_wsk).last->next = new_element;
 		(*q_wsk).last = new_element;
 	}
@@ -175,9 +186,186 @@ void view_queue(queue_wsk *q_wsk)
 }
 void clear_queue(queue_wsk *q_wsk)
 {
-
+	if (empty_queue(*q_wsk) == 0)
+	{
+		while ((*q_wsk).first != NULL)
+		{
+			queue_el current_element = (*q_wsk).first;
+			queue_el next_element = current_element->next;
+			(*q_wsk).first = next_element;
+			free(current_element);
+		}
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
 }
 
+int empty_tw_queue(tw_queue_wsk tw_q_wsk) 
+{
+	if (tw_q_wsk.first == NULL)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+void push_tw_queue(tw_queue_wsk *tw_q_wsk)
+{
+	int x;
+	printf("Put x: ");
+	scanf(" %d", &x);
+	tw_queue_el new_element = malloc(sizeof(tw_queue));
+	new_element->x = x;
+	new_element->next = NULL;
+	new_element->prev = NULL;
+	if (empty_tw_queue(*tw_q_wsk) == 1)
+	{
+		(*tw_q_wsk).first = (*tw_q_wsk).last = new_element;
+	}
+	else
+	{
+		tw_queue_el current_element = (*tw_q_wsk).last;
+		current_element->next = new_element;
+		new_element->prev = current_element;
+		(*tw_q_wsk).last = new_element;
+	}
+}
+void push_tw_queue_front(tw_queue_wsk *tw_q_wsk)
+{
+	int x;
+	printf("Put x: ");
+	scanf(" %d", &x);
+	tw_queue_el new_element = malloc(sizeof(tw_queue));
+	new_element->x = x;
+	new_element->next = NULL;
+	new_element->prev = NULL;
+	if (empty_tw_queue(*tw_q_wsk) == 1)
+	{
+		(*tw_q_wsk).first = (*tw_q_wsk).last = new_element;
+	}
+	else
+	{
+		tw_queue_el current_element = (*tw_q_wsk).first;
+		current_element->prev = new_element;
+		new_element->next = current_element;
+		(*tw_q_wsk).first = new_element;
+	}
+}
+void pop_tw_queue(tw_queue_wsk *tw_q_wsk)
+{
+	if (empty_tw_queue(*tw_q_wsk) == 0)
+	{
+		tw_queue_el current_element = (*tw_q_wsk).first;
+		tw_queue_el next_element = current_element->next;
+		(*tw_q_wsk).first = current_element->next;
+		next_element->prev = NULL;
+		free(current_element);
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void pop_tw_queue_back(tw_queue_wsk *tw_q_wsk)
+{
+	if (empty_tw_queue(*tw_q_wsk) == 0)
+	{
+		tw_queue_el current_element = (*tw_q_wsk).last;
+		tw_queue_el prev_element = current_element->prev;
+		(*tw_q_wsk).last = current_element->prev;
+		prev_element->next = NULL;
+		free(current_element);
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void peek_tw_queue(tw_queue_wsk *tw_q_wsk)
+{
+	if (empty_tw_queue(*tw_q_wsk) == 0)
+	{
+		int x;
+		tw_queue_el current_element = (*tw_q_wsk).first;
+		x = current_element->x;
+		printf("x = %d\n", x);
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void peek_tw_queue_back(tw_queue_wsk *tw_q_wsk)
+{
+	if (empty_tw_queue(*tw_q_wsk) == 0)
+	{
+		int x;
+		tw_queue_el current_element = (*tw_q_wsk).last;
+		x = current_element->x;
+		printf("x = %d\n", x);
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void view_tw_queue(tw_queue_wsk *tw_q_wsk)
+{
+	int i = 0;
+	if (empty_tw_queue(*tw_q_wsk) == 0)
+	{
+		tw_queue_el current_element = (*tw_q_wsk).first;
+		while (current_element != NULL)
+		{
+			i++;
+			printf("%d_el = %d\n", i, current_element->x);
+			current_element = current_element->next;
+		}
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void view_tw_queue_reversed(tw_queue_wsk *tw_q_wsk)
+{
+	int i = 0;
+	if (empty_tw_queue(*tw_q_wsk) == 0)
+	{
+		tw_queue_el current_element = (*tw_q_wsk).last;
+		while (current_element != NULL)
+		{
+			i++;
+			printf("%d_el = %d\n", i, current_element->x);
+			current_element = current_element->prev;
+		}
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void clear_tw_queue(tw_queue_wsk *tw_q_wsk)
+{
+	if (empty_tw_queue(*tw_q_wsk) == 0)
+	{
+		while ((*tw_q_wsk).first != NULL)
+		{
+			tw_queue_el current_element = (*tw_q_wsk).first;
+			tw_queue_el next_element = current_element->next;
+			(*tw_q_wsk).first = next_element;
+			free(current_element);
+		}
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
 
 void about()
 {
@@ -197,7 +385,17 @@ void menu_options()
 	printf("8. Peek at Queue (peek)\n");
 	printf("9. View Queue\n");
 	printf("10. Clear Queue\n");
-	/*printf("\n");
+	printf("\n");
+	printf("11. Add to Two Way Queue (push)\n");
+	printf("12. Add to front of Two Way Queue (push)\n");
+	printf("13. Remove from Two Way Queue (pop)\n");
+	printf("14. Remove from end of Two Way Queue (pop)\n");
+	printf("15. Peek at Two Way Queue (peek)\n");
+	printf("16. Peek at end of Two Way Queue (peek)\n");
+	printf("17. View Two Way Queue\n");
+	printf("18. View Two Way Queue Reversed\n");
+	printf("19. Clear Two Way Queue\n");
+	/*
 	printf("14. Add to Cyclic queue (push)\n");
 	printf("15. Remove from Cyclic queue (pop)\n");
 	printf("16. Peek at Cyclic queue (peek)\n");
@@ -222,6 +420,10 @@ int main()
 	queue_wsk q_wsk;
 	q_wsk.first = NULL;
 	q_wsk.last = NULL;
+	tw_queue_el tw_q_el = NULL;
+	tw_queue_wsk tw_q_wsk;
+	tw_q_wsk.first = NULL;
+	tw_q_wsk.last = NULL;
 	int menu;
 	int loop = 1;
 	do
@@ -273,30 +475,39 @@ int main()
 			system("pause");
 			break;
 		case 11:
+			push_tw_queue(&tw_q_wsk);
 			system("pause");
 			break;
 		case 12:
+			push_tw_queue_front(&tw_q_wsk);
 			system("pause");
 			break;
 		case 13:
+			pop_tw_queue(&tw_q_wsk);
 			system("pause");
 			break;
 		case 14:
+			pop_tw_queue_back(&tw_q_wsk);
 			system("pause");
 			break;
 		case 15:
+			peek_tw_queue(&tw_q_wsk);
 			system("pause");
 			break;
 		case 16:
+			peek_tw_queue_back(&tw_q_wsk);
 			system("pause");
 			break;
 		case 17:
+			view_tw_queue(&tw_q_wsk);
 			system("pause");
 			break;
 		case 18:
+			view_tw_queue_reversed(&tw_q_wsk);
 			system("pause");
 			break;
 		case 19:
+			clear_tw_queue(&tw_q_wsk);
 			system("pause");
 			break;
 		case 20:
