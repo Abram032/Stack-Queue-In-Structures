@@ -424,12 +424,11 @@ void push_priority_queue(priority_queue_wsk *prior_q_wsk)
 			current_element->next = new_element;
 			(*prior_q_wsk).last = new_element;
 		}
-		//BUG - Somewhere below, can't add element that priority is between highest and lowest in queue.
 		else
 		{
 			priority_queue_el current_element = (*prior_q_wsk).first;
 			priority_queue_el next_element = current_element->next;
-			while (p >= current_element->p);
+			while (p <= next_element->p)
 			{
 				current_element = next_element;
 				next_element = current_element->next;
@@ -516,7 +515,7 @@ void clear_priority_queue(priority_queue_wsk *prior_q_wsk)
 void about()
 {
 	printf("Made by Abram.\n");
-	printf("Program version: 1.25\n");
+	printf("Program version: 1.26\n");
 }
 void menu_options()
 {
