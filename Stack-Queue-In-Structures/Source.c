@@ -7,21 +7,21 @@ typedef struct stack_element
 	int x;
 	struct stack_element *next;
 } stack;
-typedef stack *stack_top;
+typedef stack *stack_el;
 
 typedef struct queue_element
 {
 	int x;
 	struct queue_element *next;
 } queue;
-typedef queue *queue_top;
+typedef queue *queue_el;
 
 typedef struct queue_wsk
 {
-	queue_top f, l;
+	queue_el first, last;
 } queue_wsk;
 
-int empty_stack(stack_top s_wsk)
+int empty_stack(stack_el s_wsk)
 {
 	if (s_wsk == NULL)
 	{
@@ -32,36 +32,36 @@ int empty_stack(stack_top s_wsk)
 		return 0;
 	}
 }
-void push_stack(stack_top *s_wsk)
+void push_stack(stack_el *s_wsk)
 {
 	int x;
 	printf("Put x: ");
 	scanf(" %d", &x);
-	stack_top new_struct = malloc(sizeof(stack));
-	new_struct->x = x;
-	new_struct->next = *s_wsk;
-	*s_wsk = new_struct;
+	stack_el new_element = malloc(sizeof(stack));
+	new_element->x = x;
+	new_element->next = *s_wsk;
+	*s_wsk = new_element;
 }
-void pop_stack(stack_top *s_wsk)
+void pop_stack(stack_el *s_wsk)
 {
 	if (empty_stack(s_wsk) == 0)
 	{
-		stack_top curr_struct = *s_wsk;
-		*s_wsk = curr_struct->next;
-		free(curr_struct);
+		stack_el current_element = *s_wsk;
+		*s_wsk = current_element->next;
+		free(current_element);
 	}
 	else
 	{
 		printf("Stack is empty!\n");
 	}
 }
-void peek_stack(stack_top *s_wsk)
+void peek_stack(stack_el *s_wsk)
 {
 	if (empty_stack(s_wsk) == 0)
 	{
 		int x;
-		stack_top curr_struct = *s_wsk;
-		x = curr_struct->x;
+		stack_el current_element = *s_wsk;
+		x = current_element->x;
 		printf("x = %d\n", x);
 	}
 	else
@@ -69,7 +69,7 @@ void peek_stack(stack_top *s_wsk)
 		printf("Stack is empty!\n");
 	}
 }
-void view_stack(stack_top s_wsk)
+void view_stack(stack_el s_wsk)
 {
 	int i = 0;
 	if (empty_stack(s_wsk) == 0)
@@ -86,19 +86,19 @@ void view_stack(stack_top s_wsk)
 		printf("Stack is empty!\n");
 	}
 }
-void clear_stack(stack_top *s_wsk)
+void clear_stack(stack_el *s_wsk)
 {
 	while (s_wsk != NULL)
 	{
-		stack_top curr_struct = *s_wsk;
-		*s_wsk = curr_struct->next;
-		free(curr_struct);
+		stack_el current_element = *s_wsk;
+		*s_wsk = current_element->next;
+		free(current_element);
 	}
 }
 
 int empty_queue(queue_wsk q_wsk)
 {
-	if (q_wsk.f == NULL)
+	if (q_wsk.first == NULL)
 	{
 		return 1;
 	}
@@ -112,32 +112,29 @@ void push_queue(queue_wsk *q_wsk)
 	int x;
 	printf("Put x: ");
 	scanf(" %d", &x);
-	if (empty_queue(*q_wsk) == 1)
+	queue_el new_element = malloc(sizeof(queue));
+	new_element->x = x;
+	new_element->next = NULL;
+	if ((*q_wsk).first == NULL)
 	{
-		queue_top new_struct = malloc(sizeof(queue));
-		new_struct->x = x;
-		new_struct->next = NULL;
-		if ((*q_wsk).f == NULL)
-		{
-			(*q_wsk).f = (*q_wsk).l = new_struct;
-			//new_struct->next = (*q_wsk).f = (*q_wsk).l;
-		}
-		else
-		{
-			//new_struct->next = (*q_wsk).l;
-			//(*q_wsk).l = new_struct;
-			(*q_wsk).l->next = new_struct;
-			(*q_wsk).l = new_struct;
-		}
+		(*q_wsk).first = (*q_wsk).last = new_element;
+		//new_struct->next = (*q_wsk).f = (*q_wsk).l;
+	}
+	else
+	{
+		//new_struct->next = (*q_wsk).l;
+		//(*q_wsk).l = new_struct;
+		(*q_wsk).last->next = new_element;
+		(*q_wsk).last = new_element;
 	}
 }
 void pop_queue(queue_wsk *q_wsk)
 {
 	if (empty_queue(*q_wsk) == 0)
 	{
-		queue_top current_struct = (*q_wsk).f;
-		(*q_wsk).f = current_struct->next;
-		free(current_struct);
+		queue_el current_element = (*q_wsk).first;
+		(*q_wsk).first = current_element->next;
+		free(current_element);
 	}
 	else
 	{
@@ -149,8 +146,8 @@ void peek_queue(queue_wsk *q_wsk)
 	if (empty_queue(*q_wsk) == 0)
 	{
 		int x;
-		queue_top current_struct = (*q_wsk).f;
-		x = current_struct->x;
+		queue_el current_element = (*q_wsk).first;
+		x = current_element->x;
 		printf("x = %d\n", x);
 	}
 	else
@@ -163,12 +160,12 @@ void view_queue(queue_wsk *q_wsk)
 	int i = 0;
 	if (empty_queue(*q_wsk) == 0)
 	{
-		queue_top current_struct = (*q_wsk).f;
-		while (current_struct != NULL)
+		queue_el current_element = (*q_wsk).first;
+		while (current_element != NULL)
 		{
 			i++;
-			printf("%d = %d\n", i, current_struct->x);
-			current_struct = current_struct->next;
+			printf("%d_el = %d\n", i, current_element->x);
+			current_element = current_element->next;
 		}
 	}
 	else
@@ -184,9 +181,8 @@ void clear_queue(queue_wsk *q_wsk)
 
 void about()
 {
-	printf("Made by Maissae.\n");
-	printf("Program version: 1.1\n");
-	printf("You're a stuff! o3o\n");
+	printf("Made by Abram.\n");
+	printf("Program version: 1.0\n");
 }
 void menu_options()
 {
@@ -221,11 +217,11 @@ void menu_options()
 
 int main()
 {
-	stack_top s_wsk = NULL;
-	queue_top q_wsk = NULL;
-	queue_wsk q_regular;
-	q_regular.f = NULL;
-	q_regular.l = NULL;
+	stack_el s_el = NULL;
+	queue_el q_el = NULL;
+	queue_wsk q_wsk;
+	q_wsk.first = NULL;
+	q_wsk.last = NULL;
 	int menu;
 	int loop = 1;
 	do
@@ -237,23 +233,23 @@ int main()
 		switch (menu)
 		{
 		case 1:
-			push_stack(&s_wsk);
+			push_stack(&s_el);
 			system("pause");
 			break;
 		case 2:
-			pop_stack(&s_wsk);
+			pop_stack(&s_el);
 			system("pause");
 			break;
 		case 3:
-			peek_stack(&s_wsk);
+			peek_stack(&s_el);
 			system("pause");
 			break;
 		case 4:
-			view_stack(s_wsk);
+			view_stack(s_el);
 			system("pause");
 			break;
 		case 5:
-			clear_stack(&s_wsk);
+			clear_stack(&s_el);
 			system("pause");
 			break;
 		case 6:
