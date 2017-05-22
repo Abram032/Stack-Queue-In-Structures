@@ -34,6 +34,20 @@ typedef struct tw_queue_wsk
 	tw_queue_el first, last;
 } tw_queue_wsk;
 
+typedef struct priority_queue_element
+{
+	int x;
+	int p;
+	struct priority_queue_element *next;
+	struct priority_queue_element *prev;
+} priority_queue;
+typedef priority_queue *priority_queue_el;
+
+typedef struct priority_queue_wsk
+{
+	priority_queue_el first, last;
+} priority_queue_wsk;
+
 int empty_stack(stack_el s_wsk)
 {
 	if (s_wsk == NULL)
@@ -367,10 +381,117 @@ void clear_tw_queue(tw_queue_wsk *tw_q_wsk)
 	}
 }
 
+int empty_priortiy_queue(priority_queue_wsk prior_q_wsk)
+{
+	if (prior_q_wsk.first == NULL)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+void push_priority_queue(priority_queue_wsk *prior_q_wsk)
+{
+	int x, p;
+	printf("Put x: ");
+	scanf(" %d", &x);
+	printf("Set priority: ");
+	scanf(" %d", &p);
+	priority_queue_el new_element = malloc(sizeof(priority_queue));
+	new_element->x = x;
+	new_element->p = p;
+	new_element->next = NULL;
+	new_element->prev = NULL;
+	if (empty_priority_queue(*prior_q_wsk) == 1)
+	{
+		(*prior_q_wsk).first = (*prior_q_wsk).last = new_element;
+	}
+	else
+	{
+		priority_queue_el current_element = (*prior_q_wsk).last;
+		current_element->next = new_element;
+		new_element->prev = current_element;
+		(*prior_q_wsk).last = new_element;
+	}
+}
+void pop_priority_queue(priority_queue_wsk *prior_q_wsk)
+{
+	if (empty_priority_queue(*prior_q_wsk) == 0)
+	{
+		tw_queue_el current_element = (*prior_q_wsk).first;
+		tw_queue_el next_element = current_element->next;
+		(*prior_q_wsk).first = current_element->next;
+		next_element->prev = NULL;
+		free(current_element);
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void peek_priority_queue(priority_queue_wsk *prior_q_wsk)
+{
+	if (empty_priority_queue(*prior_q_wsk) == 0)
+	{
+		int x, p;
+		priority_queue_el current_element = (*prior_q_wsk).first;
+		x = current_element->x;
+		p = current_element->p;
+		printf("x = %d\n", x);
+		printf("priority = %d\n", p);
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void adjust_priortiy_queue(priority_queue_wsk *prior_q_wsk)
+{
+
+}
+void view_priority_queue(priority_queue_wsk *prior_q_wsk)
+{
+	int i = 0;
+	if (empty_priority_queue(*prior_q_wsk) == 0)
+	{
+		priority_queue_el current_element = (*prior_q_wsk).first;
+		while (current_element != NULL)
+		{
+			i++;
+			printf("%d_el = %d\n", i, current_element->x);
+			printf("%d_el priority = %d\n\n", i, current_element->p);
+			current_element = current_element->next;
+		}
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void clear_priority_queue(priority_queue_wsk *prior_q_wsk)
+{
+	if (empty_priortiy_queue(*prior_q_wsk) == 0)
+	{
+		while ((*prior_q_wsk).first != NULL)
+		{
+			tw_queue_el current_element = (*prior_q_wsk).first;
+			tw_queue_el next_element = current_element->next;
+			(*prior_q_wsk).first = next_element;
+			free(current_element);
+		}
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+
 void about()
 {
 	printf("Made by Abram.\n");
-	printf("Program version: 1.0\n");
+	printf("Program version: 1.21\n");
 }
 void menu_options()
 {
@@ -395,13 +516,15 @@ void menu_options()
 	printf("17. View Two Way Queue\n");
 	printf("18. View Two Way Queue Reversed\n");
 	printf("19. Clear Two Way Queue\n");
-	/*
-	printf("14. Add to Cyclic queue (push)\n");
-	printf("15. Remove from Cyclic queue (pop)\n");
-	printf("16. Peek at Cyclic queue (peek)\n");
-	printf("17. View Cyclic queue\n");
-	printf("18. Clear Cyclic queue\n");
 	printf("\n");
+	printf("20. Add to Priority queue (push)\n");
+	printf("21. Remove from Priority queue (pop)\n");
+	printf("22. Peek at Priority queue (peek)\n");
+	printf("23. Adjust Priority queue (peek)\n");
+	printf("24. View Priority queue\n");
+	printf("25. Clear Priority queue\n");
+	printf("\n");
+	/*
 	printf("19. Add to Priority queue (push)\n");
 	printf("20. Remove from Priority queue (pop)\n");
 	printf("21. Peek at Priority queue (peek)\n");
@@ -417,13 +540,21 @@ int main()
 {
 	stack_el s_el = NULL;
 	queue_el q_el = NULL;
+
 	queue_wsk q_wsk;
 	q_wsk.first = NULL;
 	q_wsk.last = NULL;
+
 	tw_queue_el tw_q_el = NULL;
 	tw_queue_wsk tw_q_wsk;
 	tw_q_wsk.first = NULL;
 	tw_q_wsk.last = NULL;
+
+	priority_queue_el prior_q_el = NULL;
+	priority_queue_wsk prior_q_wsk;
+	prior_q_wsk.first = NULL;
+	prior_q_wsk.last = NULL;
+
 	int menu;
 	int loop = 1;
 	do
