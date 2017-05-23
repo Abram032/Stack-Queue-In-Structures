@@ -418,14 +418,14 @@ void push_priority_queue(priority_queue_wsk *prior_q_wsk, int x, int p)
 	}
 	else
 	{
-		if (p > (*prior_q_wsk).first->p)
+		if (p >= (*prior_q_wsk).first->p)
 		{
 			priority_queue_el current_element = (*prior_q_wsk).first;
 			new_element->next = current_element;
 			current_element->prev = new_element;
 			(*prior_q_wsk).first = new_element;
 		}
-		else if (p < (*prior_q_wsk).last->p)
+		else if (p <= (*prior_q_wsk).last->p)
 		{
 			priority_queue_el current_element = (*prior_q_wsk).last;
 			new_element->prev = current_element;
@@ -509,7 +509,7 @@ void view_priority_queue(priority_queue_wsk *prior_q_wsk)
 }
 void adjust_priortiy_queue(priority_queue_wsk *prior_q_wsk)
 {
-	int n, x, p;
+	int n, x, p, c=0;
 	if (empty_priority_queue(*prior_q_wsk) == 1)
 	{
 		view_priority_queue(&(*prior_q_wsk));
@@ -520,8 +520,20 @@ void adjust_priortiy_queue(priority_queue_wsk *prior_q_wsk)
 		priority_queue_el current_element = (*prior_q_wsk).first;
 		priority_queue_el next_element;
 		priority_queue_el previous_element;
+		while (current_element != NULL)
+		{
+			c++;
+			current_element = current_element->next;
+		}
+		current_element = (*prior_q_wsk).first;
 		printf("\nWhich element would you like to adjust: ");
 		scanf(" %d", &n);
+		while (n > c || n < 1)
+		{
+			printf("\nYou can't adjust element that doesn't exist.");
+			printf("\nWhich element would you like to adjust: ");
+			scanf(" %d", &n);
+		}
 		printf("\nSet new Priority: ");
 		scanf(" %d", &p);
 		for (int i = 1; i < n; i++)
@@ -598,13 +610,13 @@ void push_ow_priority_queue(ow_priority_queue_wsk *ow_prior_q_wsk, int x, int p)
 	}
 	else
 	{
-		if (p > (*ow_prior_q_wsk).first->p)
+		if (p >= (*ow_prior_q_wsk).first->p)
 		{
 			ow_priority_queue_el current_element = (*ow_prior_q_wsk).first;
 			new_element->next = current_element;
 			(*ow_prior_q_wsk).first = new_element;
 		}
-		else if (p < (*ow_prior_q_wsk).last->p)
+		else if (p <= (*ow_prior_q_wsk).last->p)
 		{
 			ow_priority_queue_el current_element = (*ow_prior_q_wsk).last;
 			current_element->next = new_element;
@@ -684,7 +696,7 @@ void view_ow_priority_queue(ow_priority_queue_wsk *ow_prior_q_wsk)
 }
 void adjust_ow_priortiy_queue(ow_priority_queue_wsk *ow_prior_q_wsk)
 {
-	int n, x, p;
+	int n, x, p, c=0;
 	if (empty_ow_priority_queue(*ow_prior_q_wsk) == 1)
 	{
 		view_ow_priority_queue(&(*ow_prior_q_wsk));
@@ -695,8 +707,20 @@ void adjust_ow_priortiy_queue(ow_priority_queue_wsk *ow_prior_q_wsk)
 		ow_priority_queue_el current_element = (*ow_prior_q_wsk).first;
 		ow_priority_queue_el next_element;
 		ow_priority_queue_el previous_element = (*ow_prior_q_wsk).first;
+		while (current_element != NULL)
+		{
+			c++;
+			current_element = current_element->next;
+		}
+		current_element = (*ow_prior_q_wsk).first;
 		printf("\nWhich element would you like to adjust: ");
 		scanf(" %d", &n);
+		while (n > c || n < 1)
+		{
+			printf("\nYou can't adjust element that doesn't exist.");
+			printf("\nWhich element would you like to adjust: ");
+			scanf(" %d", &n);
+		}
 		printf("\nSet new Priority: ");
 		scanf(" %d", &p);
 		for (int i = 1; i < n; i++)
@@ -751,7 +775,7 @@ void clear_ow_priority_queue(ow_priority_queue_wsk *ow_prior_q_wsk)
 void about()
 {
 	printf("Made by Abram.\n");
-	printf("Program version: 1.31\n");
+	printf("Program version: 1.32\n");
 }
 void menu_options()
 {
