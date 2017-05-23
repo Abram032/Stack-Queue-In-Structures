@@ -775,7 +775,7 @@ void clear_ow_priority_queue(ow_priority_queue_wsk *ow_prior_q_wsk)
 void about()
 {
 	printf("Made by Abram.\n");
-	printf("Program version: 1.32\n");
+	printf("Program version: 1.4\n");
 }
 void menu_options()
 {
