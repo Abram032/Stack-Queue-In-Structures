@@ -48,6 +48,19 @@ typedef struct priority_queue_wsk
 	priority_queue_el first, last;
 } priority_queue_wsk;
 
+typedef struct ow_priority_queue_element
+{
+	int x;
+	int p;
+	struct ow_priority_queue_element *next;
+} ow_priority_queue;
+typedef ow_priority_queue *ow_priority_queue_el;
+
+typedef struct ow_priority_queue_wsk
+{
+	ow_priority_queue_el first, last;
+} ow_priority_queue_wsk;
+
 int empty_stack(stack_el s_wsk)
 {
 	if (s_wsk == NULL)
@@ -562,10 +575,183 @@ void clear_priority_queue(priority_queue_wsk *prior_q_wsk)
 	}
 }
 
+int empty_ow_priority_queue(ow_priority_queue_wsk ow_prior_q_wsk)
+{
+	if (ow_prior_q_wsk.first == NULL)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+void push_ow_priority_queue(ow_priority_queue_wsk *ow_prior_q_wsk, int x, int p)
+{
+	ow_priority_queue_el new_element = malloc(sizeof(ow_priority_queue));
+	new_element->x = x;
+	new_element->p = p;
+	new_element->next = NULL;
+	if (empty_ow_priority_queue(*ow_prior_q_wsk) == 1)
+	{
+		(*ow_prior_q_wsk).first = (*ow_prior_q_wsk).last = new_element;
+	}
+	else
+	{
+		if (p > (*ow_prior_q_wsk).first->p)
+		{
+			ow_priority_queue_el current_element = (*ow_prior_q_wsk).first;
+			new_element->next = current_element;
+			(*ow_prior_q_wsk).first = new_element;
+		}
+		else if (p < (*ow_prior_q_wsk).last->p)
+		{
+			ow_priority_queue_el current_element = (*ow_prior_q_wsk).last;
+			current_element->next = new_element;
+			(*ow_prior_q_wsk).last = new_element;
+		}
+		else
+		{
+			ow_priority_queue_el current_element = (*ow_prior_q_wsk).first;
+			ow_priority_queue_el next_element = current_element->next;
+			while (p <= next_element->p)
+			{
+				current_element = next_element;
+				next_element = current_element->next;
+			}
+			new_element->next = next_element;
+			current_element->next = new_element;
+		}
+	}
+}
+void pop_ow_priority_queue(ow_priority_queue_wsk *ow_prior_q_wsk)
+{
+	if (empty_ow_priority_queue(*ow_prior_q_wsk) == 0)
+	{
+		ow_priority_queue_el current_element = (*ow_prior_q_wsk).first;
+		if (current_element->next == NULL)
+		{
+			(*ow_prior_q_wsk).first = NULL;
+			(*ow_prior_q_wsk).last = NULL;
+			free(current_element);
+		}
+		else
+		{
+			ow_priority_queue_el next_element = current_element->next;
+			(*ow_prior_q_wsk).first = current_element->next;
+			free(current_element);
+		}
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void peek_ow_priority_queue(ow_priority_queue_wsk *ow_prior_q_wsk)
+{
+	if (empty_ow_priority_queue(*ow_prior_q_wsk) == 0)
+	{
+		int x, p;
+		ow_priority_queue_el current_element = (*ow_prior_q_wsk).first;
+		x = current_element->x;
+		p = current_element->p;
+		printf("x = %d\n", x);
+		printf("priority = %d\n", p);
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void view_ow_priority_queue(ow_priority_queue_wsk *ow_prior_q_wsk)
+{
+	int i = 0;
+	if (empty_ow_priority_queue(*ow_prior_q_wsk) == 0)
+	{
+		ow_priority_queue_el current_element = (*ow_prior_q_wsk).first;
+		while (current_element != NULL)
+		{
+			i++;
+			printf("%d_el = %d\n", i, current_element->x);
+			printf("%d_el priority = %d\n\n", i, current_element->p);
+			current_element = current_element->next;
+		}
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+void adjust_ow_priortiy_queue(ow_priority_queue_wsk *ow_prior_q_wsk)
+{
+	int n, x, p;
+	if (empty_ow_priority_queue(*ow_prior_q_wsk) == 1)
+	{
+		view_ow_priority_queue(&(*ow_prior_q_wsk));
+	}
+	else
+	{
+		view_ow_priority_queue(&(*ow_prior_q_wsk));
+		ow_priority_queue_el current_element = (*ow_prior_q_wsk).first;
+		ow_priority_queue_el next_element;
+		ow_priority_queue_el previous_element = (*ow_prior_q_wsk).first;
+		printf("\nWhich element would you like to adjust: ");
+		scanf(" %d", &n);
+		printf("\nSet new Priority: ");
+		scanf(" %d", &p);
+		for (int i = 1; i < n; i++)
+		{
+			previous_element = current_element;
+			current_element = current_element->next;
+			next_element = current_element->next;
+		}
+		x = current_element->x;
+		next_element = current_element->next;
+		if ((*ow_prior_q_wsk).first == (*ow_prior_q_wsk).last)
+		{
+			pop_ow_priority_queue(&(*ow_prior_q_wsk));
+		}
+		else if (next_element == NULL)
+		{
+			previous_element->next = NULL;
+			(*ow_prior_q_wsk).last = previous_element;
+			free(current_element);
+		}
+		else if ((*ow_prior_q_wsk).first == current_element)
+		{
+			pop_ow_priority_queue(&(*ow_prior_q_wsk));
+		}
+		else
+		{
+			previous_element->next = next_element;
+			free(current_element);
+		}
+		push_ow_priority_queue(&(*ow_prior_q_wsk), x, p);
+	}
+}
+void clear_ow_priority_queue(ow_priority_queue_wsk *ow_prior_q_wsk)
+{
+	if (empty_ow_priority_queue(*ow_prior_q_wsk) == 0)
+	{
+		while ((*ow_prior_q_wsk).first != NULL)
+		{
+			ow_priority_queue_el current_element = (*ow_prior_q_wsk).first;
+			ow_priority_queue_el next_element = current_element->next;
+			(*ow_prior_q_wsk).first = next_element;
+			free(current_element);
+		}
+	}
+	else
+	{
+		printf("Queue is empty!\n");
+	}
+}
+
+
 void about()
 {
 	printf("Made by Abram.\n");
-	printf("Program version: 1.3\n");
+	printf("Program version: 1.31\n");
 }
 void menu_options()
 {
@@ -598,16 +784,16 @@ void menu_options()
 	printf("24. View Priority queue\n");
 	printf("25. Clear Priority queue\n");
 	printf("\n");
-	/*
-	printf("19. Add to Priority queue (push)\n");
-	printf("20. Remove from Priority queue (pop)\n");
-	printf("21. Peek at Priority queue (peek)\n");
-	printf("22. Adjust Priority (adjust)\n");
-	printf("23. View Priority queue\n");
-	printf("24. Clear Priority queue\n");
-	printf("\n");*/
-	printf("26. About\n");
-	printf("27. Exit\n");
+	printf("26. Add to one way Priority queue (push)\n");
+	printf("27. Remove from one way Priority queue (pop)\n");
+	printf("28. Peek at one way Priority queue (peek)\n");
+	printf("29. Adjust one way Priority (adjust)\n");
+	printf("30. View one way Priority queue\n");
+	printf("31. Clear one way Priority queue\n");
+	printf("\n");
+	printf("32. About\n");
+	printf("33. Exit\n");
+	printf("\n");
 }
 
 int main()
@@ -630,6 +816,11 @@ int main()
 	priority_queue_wsk prior_q_wsk;
 	prior_q_wsk.first = NULL;
 	prior_q_wsk.last = NULL;
+
+	ow_priority_queue_el ow_prior_q_el = NULL;
+	ow_priority_queue_wsk ow_prior_q_wsk;
+	ow_prior_q_wsk.first = NULL;
+	ow_prior_q_wsk.last = NULL;
 
 	int menu;
 	int loop = 1;
@@ -746,10 +937,38 @@ int main()
 			system("pause");
 			break;
 		case 26:
-			about();
+			printf("Put x: ");
+			scanf(" %d", &x);
+			printf("Set priority: ");
+			scanf(" %d", &p);
+			push_ow_priority_queue(&ow_prior_q_wsk, x, p);
 			system("pause");
 			break;
 		case 27:
+			pop_ow_priority_queue(&ow_prior_q_wsk);
+			system("pause");
+			break;
+		case 28:
+			peek_ow_priority_queue(&ow_prior_q_wsk);
+			system("pause");
+			break;
+		case 29:
+			adjust_ow_priortiy_queue(&ow_prior_q_wsk);
+			system("pause");
+			break;
+		case 30:
+			view_ow_priority_queue(&ow_prior_q_wsk);
+			system("pause");
+			break;
+		case 31:
+			clear_ow_priority_queue(&ow_prior_q_wsk);
+			system("pause");
+			break;
+		case 32:
+			about();
+			system("pause");
+			break;
+		case 33:
 			loop = 0;
 			break;
 		default:
